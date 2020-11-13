@@ -14,7 +14,7 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('hello');
 });
-// init port
+// init ports
 const port = process.env.PORT || 7000;
 
 app.listen(port, () => {
