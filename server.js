@@ -1,6 +1,7 @@
 // dependancie
 const express = require('express');
 const app = express();
+const path = require('path');
 
 // middel ware
 app.use(
@@ -10,10 +11,22 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, '/view')));
+
 // routes
-app.get('/', (req, res) => {
-  res.send('hello');
+app.get('/account', (req, res) => {
+  res.sendFile(path.join(__dirname + '/view/account.html'));
 });
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname + '/view/login.html'));
+});
+
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname + '/view/register.html'));
+});
+
 // init ports
 const port = process.env.PORT || 7000;
 
