@@ -8,13 +8,14 @@
   </head>
   <body>
     <h1>User Login</h1>
-    <form action="/login" method="post">
+    <form action="/login" method="POST">
       <label for="email">Email</label>
-      <input type="text" id="email" />
+      <input type="text" id="email" name="email" />
       <label for="password">Password</label>
-      <input type="text" id="password" />
+      <input type="text" id="password" name="password" />
       <label for="button">Submit Form</label>
-      <button type="submit" id="button" name="submit_button">Submit</button>
+      <button type="submit" id="button" name="submit_button">Login</button>
     </form>
+    <a href="/register">Register</a>
   </body>
 </html>
