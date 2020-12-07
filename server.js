@@ -10,6 +10,7 @@ const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const initializeLocalStrategy = require('./passportConfig.js');
+const { read } = require('fs');
 // store
 const users = [];
 
@@ -42,16 +43,21 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // routes
-app.get('/account', (req, res) => {
+app.get('/account', checkAuth, (req, res) => {
   res.sendFile(path.join(__dirname + '/view/account.html'));
 });
 // login routes
-app.get('/login', (req, res) => {
+app.get('/login', checkAlreadyAuth, (req, res) => {
   res.sendFile(path.join(__dirname + '/view/login.html'));
 });
 
+app.delete('./logout', (req, res) => {
+  req.logOut();
+  req.redirect('./login');
+});
 app.post(
   '/login',
+  checkAlreadyAuth,
   passport.authenticate('local', {
     successRedirect: '/account',
     failureRedirect: '/login',
@@ -59,11 +65,11 @@ app.post(
   })
 );
 // register routes
-app.get('/register', (req, res) => {
+app.get('/register', checkAlreadyAuth, (req, res) => {
   res.sendFile(path.join(__dirname + '/view/register.html'));
 });
 
-app.post('/register', async (req, res) => {
+app.post('/register', checkAlreadyAuth, async (req, res) => {
   try {
     const user = users.find((user) => user.email == req.body.email);
     if (user) return res.status(400).json({ email: 'User already exists' });
@@ -88,3 +94,17 @@ const port = process.env.PORT || 7000;
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
+
+function checkAuth(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('./login');
+}
+
+function checkAlreadyAuth(req, res, next) {
+  if (req.isAuthenticated()) {
+    res.redirect('./account');
+  }
+  return next();
+}
